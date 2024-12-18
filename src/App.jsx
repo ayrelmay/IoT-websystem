@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Trash2, Bell, BellOff } from "lucide-react";
+import { Trash2, Lock, LockOpen } from "lucide-react";
 import ProgressBar from "./components/ProgressBar";
-import BuzzerToggle from "./components/BuzzerToggle";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 export default function App() {
   const [fullness, setFullness] = useState(0);
-  const [isBuzzerOn, setIsBuzzerOn] = useState(false);
+  const [isLidClosed, setIsLidClosed] = useState(true);
 
   // Simulate IoT sensor data
   useEffect(() => {
@@ -21,13 +20,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Check if trashcan is full and buzzer is on
-  useEffect(() => {
-    if (fullness >= 90 && isBuzzerOn) {
-      alert("Trashcan is full! Please empty it.");
-    }
-  }, [fullness, isBuzzerOn]);
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header />
@@ -38,19 +30,24 @@ export default function App() {
             Trashcan Monitor
           </h2>
           <ProgressBar fullness={fullness} />
-          <BuzzerToggle isBuzzerOn={isBuzzerOn} setIsBuzzerOn={setIsBuzzerOn} />
           <div className="mt-6 text-center text-gray-600">
-            {isBuzzerOn ? (
-              <p className="flex items-center justify-center">
-                <Bell className="mr-2" size={18} />
-                Buzzer is active
-              </p>
-            ) : (
-              <p className="flex items-center justify-center">
-                <BellOff className="mr-2" size={18} />
-                Buzzer is inactive
-              </p>
-            )}
+            <p
+              className={`flex items-center justify-center ${
+                !isLidClosed ? "text-red-500" : ""
+              }`}
+            >
+              {isLidClosed ? (
+                <>
+                  <Lock className="mr-2" size={18} />
+                  Lid Status: Closed
+                </>
+              ) : (
+                <>
+                  <LockOpen className="mr-2" size={18} />
+                  Lid Status: Open
+                </>
+              )}
+            </p>
           </div>
         </div>
       </main>
